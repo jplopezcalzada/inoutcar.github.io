@@ -26,12 +26,35 @@
   <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900' rel='stylesheet' type='text/css'>
 
   <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+  <!--Validar los campos -->
+  <script>
+   console.log("script");
+(function($) {
+  $.fn.inputFilter = function(inputFilter) {
+    return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+      if (inputFilter(this.value)) {
+        this.oldValue = this.value;
+        this.oldSelectionStart = this.selectionStart;
+        this.oldSelectionEnd = this.selectionEnd;
+      } else if (this.hasOwnProperty("oldValue")) {
+        this.value = this.oldValue;
+        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+      } else {
+        this.value = "";
+      }
+    });
+  };
+}(jQuery));
+
+console.log("scriptFin");
+      </script>
+  
   <style>
     *{font-family: 'Source Sans Pro', sans-serif;}
     .map {height:70%}
-    #map {position:relative;height:800px;}
+    #map {position:relative;height:800px;overflow: auto;}
     .leaflet-popup-content {font-size: medium;}
-    .form-group{width:250px;margin-bottom:0;overflow: auto;}
+    .form-group{width:200px;margin-bottom:0;overflow: auto;}
     .form-control{resize:none;}
     .text-muted{font-size:smaller;}
     hr {margin: 10px 0;}    
@@ -82,6 +105,8 @@
     var formObsDExt='1933326221';
     var formCRenting='724586323';
     var formEmpresaEntrega='1725089055';
+    var formConductor='1693525254';
+    var formIdEmpleado='367202362';
     
 	//var gsheet = '1v8xW8RbyB4qSlHq2IkTOGIEy0Lo4dVtST4FIyqty9FA';
 
@@ -111,8 +136,8 @@
       lat = e.latlng.lat;
       lng = e.latlng.lng;
 
-      var form = '<div id="formdiv"><form role="form" id="projectform"><div class="form-group"><label for="IN_OUT" class="requiredField">Entrega/Devolucion</label><select name="IN_OUT" class="form-control" id="IN_OUT" size="2"><option selected>Entrega</option><option >Devolución</option></select>	<label for="KM" class="requiredField">Kilómetros</label><input type="text" class="form-control" id="KM" placeholder="12345"><br><label for="Matricula" class="requiredField">Matricula</label><input type="text" class="form-control" id="Matricula" placeholder="KDD1234"><br><label for="Marca" class="requiredField">Marca</label><input type="text" class="form-control" id="Marca" placeholder="Opel"><br><label for="Modelo" class="requiredField">Modelo</label><input type="text" class="form-control" id="Modelo" placeholder="Corsa"><br><fieldset><legend>Documentos/Accesorios</legend><label for="PCircualcion" class="requiredField">Permiso Circulación</label><select name="PCircualcion" class="form-control" id="PCircualcion" size="2"><option selected>Si</option><option >No</option></select><label for="FTecnica" class="requiredField">Ficha Tecnica</label><select name="FTecnica" class="form-control" id="FTecnica" size="2"><option selected>Si</option><option >No</option></select><label for="LMantenimiento" class="requiredField">Libro Mantenimiento</label><select name="LMantenimiento" class="form-control" id="LMantenimiento" size="2"><option selected>Si</option><option >No</option></select><label for="ITV" class="requiredField">ITV en vigor</label><select name="ITV" class="form-control" id="ITV" size="2"><option selected>Si</option><option >No</option></select><label for="segundaLlave" class="requiredField">2º Llave</label><select name="segundaLlave" class="form-control" id="segundaLlave" size="2"><option selected>Si</option><option >No</option></select><label for="NRemplazo" class="requiredField">Neumatico Repuesto</label><select name="NRemplazo" class="form-control" id="NRemplazo" size="2"><option selected>Si</option><option >No</option></select><label for="AsientoSuple" class="requiredField">Asiento supletorio</label><select name="AsientoSuple" class="form-control" id="AsientoSuple" size="2"><option selected>Si</option><option >No</option></select><label for="Antena" class="requiredField">Antena</label><select name="Antena" class="form-control" id="Antena" size="2"><option selected>Si</option><option >No</option></select><label for="Tapacubos" class="requiredField">Tapacubos</label><select name="Tapacubos" class="form-control" id="Tapacubos" size="2"><option selected>Si</option><option >No</option></select><label for="JLuces" class="requiredField">Juego de Luces</label><select name="JLuces" class="form-control" id="JLuces" size="2"><option selected>Si</option><option >No</option></select><label for="OtroEquip" class="requiredField">Otros equipamientos</label><input type="text" class="form-control" id="OtroEquip" placeholder="Corsa"><br></fieldset><fieldset><legend>Daños Internos</legend><label for="DAsientos" class="requiredField">Asientos</label><select name="DAsientos" class="form-control" id="DAsientos" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DGuantera" class="requiredField">Guantera</label><select name="DGuantera" class="form-control" id="DGuantera" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DVolante" class="requiredField">Volante</label><select name="DVolante" class="form-control" id="DVolante" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DRevestimientoTecho" class="requiredField">Revestimiento Techo</label><select name="DRevestimientoTecho" class="form-control" id="DRevestimientoTecho" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DMaletero" class="requiredField">Maletero</label><select name="DMaletero" class="form-control" id="DMaletero" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DABrazos" class="requiredField">Apoya Brazos</label><select name="DABrazos" class="form-control" id="DABrazos" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DGPuertas" class="requiredField">Guarnición de Puertas</label><select name="DGPuertas" class="form-control" id="DGPuertas" size="2"><option selected>Bien</option><option >Mal</option></select><label for="CCentral" class="requiredField">Consola Central</label><select name="CCentral" class="form-control" id="CCentral" size="2"><option selected>Bien</option><option >Mal</option></select><label for="obsDInt" class="requiredField">Observaciones Daños Interiores</label><input type="text" class="form-control" id="obsDInt" placeholder="Corsa"><br> </fieldset><fieldset><legend>Daños Externos</legend><label for="ObsDExt" class="requiredField">Observación Daños Exteriores</label><input type="text" class="form-control" id="ObsDExt" placeholder="Opel"><br></fieldset><label for="CRenting" class="requiredField">Compañia renting</label><input type="text" class="form-control" id="CRenting" placeholder="Corsa"><br><label for="EmpresaEntrega" class="requiredField">Empresa Entrega</label><input type="text" class="form-control" id="EmpresaEntrega" placeholder="Opel"><br></div><em class="text-muted">Click para añadir punto de localizacion</em><div id="formHelp"></div><hr /><button type="submit" id="submit" class="btn btn-default btn-sm">Enviar</button></form></div>';
-
+      //var form = '<div id="formdiv"><form role="form" id="projectform"><div class="form-group"><label for="IN_OUT" class="requiredField">Entrega/Devolucion</label><select name="IN_OUT" class="form-control" id="IN_OUT" size="2"><option selected>Entrega</option><option >Devolución</option></select>	<label for="KM" class="requiredField">Kilómetros</label><input type="text" class="form-control" id="KM" placeholder="12345" pattern="d{4}[A-Z]{3}"><br><label for="Matricula" class="requiredField">Matricula</label><input type="text" class="form-control" id="Matricula" placeholder="KDD1234"><br><label for="Marca" class="requiredField">Marca</label><input type="text" class="form-control" id="Marca" placeholder="Opel"><br><label for="Modelo" class="requiredField">Modelo</label><input type="text" class="form-control" id="Modelo" placeholder="Corsa"><br><fieldset><legend>Documentos/Accesorios</legend><label for="PCircualcion" class="requiredField">Permiso Circulación</label><select name="PCircualcion" class="form-control" id="PCircualcion" size="2"><option selected>Si</option><option >No</option></select><label for="FTecnica" class="requiredField">Ficha Tecnica</label><select name="FTecnica" class="form-control" id="FTecnica" size="2"><option selected>Si</option><option >No</option></select><label for="LMantenimiento" class="requiredField">Libro Mantenimiento</label><select name="LMantenimiento" class="form-control" id="LMantenimiento" size="2"><option selected>Si</option><option >No</option></select><label for="ITV" class="requiredField">ITV en vigor</label><select name="ITV" class="form-control" id="ITV" size="2"><option selected>Si</option><option >No</option></select><label for="segundaLlave" class="requiredField">2º Llave</label><select name="segundaLlave" class="form-control" id="segundaLlave" size="2"><option selected>Si</option><option >No</option></select><label for="NRemplazo" class="requiredField">Neumatico Repuesto</label><select name="NRemplazo" class="form-control" id="NRemplazo" size="2"><option selected>Si</option><option >No</option></select><label for="AsientoSuple" class="requiredField">Asiento supletorio</label><select name="AsientoSuple" class="form-control" id="AsientoSuple" size="2"><option selected>Si</option><option >No</option></select><label for="Antena" class="requiredField">Antena</label><select name="Antena" class="form-control" id="Antena" size="2"><option selected>Si</option><option >No</option></select><label for="Tapacubos" class="requiredField">Tapacubos</label><select name="Tapacubos" class="form-control" id="Tapacubos" size="2"><option selected>Si</option><option >No</option></select><label for="JLuces" class="requiredField">Juego de Luces</label><select name="JLuces" class="form-control" id="JLuces" size="2"><option selected>Si</option><option >No</option></select><label for="OtroEquip" class="requiredField">Otros equipamientos</label><input type="text" class="form-control" id="OtroEquip" placeholder="Corsa"><br></fieldset><fieldset><legend>Daños Internos</legend><label for="DAsientos" class="requiredField">Asientos</label><select name="DAsientos" class="form-control" id="DAsientos" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DGuantera" class="requiredField">Guantera</label><select name="DGuantera" class="form-control" id="DGuantera" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DVolante" class="requiredField">Volante</label><select name="DVolante" class="form-control" id="DVolante" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DRevestimientoTecho" class="requiredField">Revestimiento Techo</label><select name="DRevestimientoTecho" class="form-control" id="DRevestimientoTecho" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DMaletero" class="requiredField">Maletero</label><select name="DMaletero" class="form-control" id="DMaletero" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DABrazos" class="requiredField">Apoya Brazos</label><select name="DABrazos" class="form-control" id="DABrazos" size="2"><option selected>Bien</option><option >Mal</option></select><label for="DGPuertas" class="requiredField">Guarnición de Puertas</label><select name="DGPuertas" class="form-control" id="DGPuertas" size="2"><option selected>Bien</option><option >Mal</option></select><label for="CCentral" class="requiredField">Consola Central</label><select name="CCentral" class="form-control" id="CCentral" size="2"><option selected>Bien</option><option >Mal</option></select><label for="obsDInt" class="requiredField">Observaciones Daños Interiores</label><input type="text" class="form-control" id="obsDInt" placeholder="Corsa"><br> </fieldset><fieldset><legend>Daños Externos</legend><label for="ObsDExt" class="requiredField">Observación Daños Exteriores</label><input type="text" class="form-control" id="ObsDExt" placeholder="Opel"><br></fieldset><label for="CRenting" class="requiredField">Compañia renting</label><input type="text" class="form-control" id="CRenting" placeholder="Corsa"><br><label for="EmpresaEntrega" class="requiredField">Empresa Entrega</label><input type="text" class="form-control" id="EmpresaEntrega" placeholder="Opel"><br></div><em class="text-muted">Click para añadir punto de localizacion</em><div id="formHelp"></div><hr /><button type="submit" id="submit" class="btn btn-default btn-sm">Enviar</button></form></div>';
+      var form = '<div id="formdiv"><form role="form" id="projectform"><div class="form-group"><!--label for="description" class="requiredField">Formulario para el registro del vehiculo GPS </label><br--><label for="IN_OUT" class="requiredField">Entrega/Devolucion</label><select name="IN_OUT" class="form-control" id="IN_OUT" size="2"><option selected>Entrega</option><option >Devolución</option></select><label for="KM" class="requiredField">Kilómetros</label><input type="text" class="form-control" id="KM" placeholder="12345..."><br><label for="Matricula" class="requiredField">Matricula</label><input type="text" class="form-control" id="Matricula" placeholder="KDD1234"><br> <label for="Marca" class="requiredField">Marca</label><input type="text" class="form-control" id="Marca" placeholder="Opel"><br><label for="Modelo" class="requiredField">Modelo</label><input type="text" class="form-control" id="Modelo" placeholder="Corsa"><br> <details> <summary>Documentos/Accesorios</summary> <label for="PCircualcion" class="requiredField">Permiso Circulación</label> <select name="PCircualcion" class="form-control" id="PCircualcion" size="2"> <option >Si</option> <option >No</option> </select> <label for="FTecnica" class="requiredField">Ficha Tecnica</label> <select name="FTecnica" class="form-control" id="FTecnica" size="2"> <option >Si</option> <option >No</option> </select> <label for="LMantenimiento" class="requiredField">Libro Mantenimiento</label> <select name="LMantenimiento" class="form-control" id="LMantenimiento" size="2"> <option >Si</option> <option >No</option> </select> <label for="ITV" class="requiredField">ITV en vigor</label> <select name="ITV" class="form-control" id="ITV" size="2"> <option >Si</option> <option >No</option> </select> <label for="segundaLlave" class="requiredField">2º Llave</label> <select name="segundaLlave" class="form-control" id="segundaLlave" size="2"> <option >Si</option> <option >No</option> </select> <label for="NRemplazo" class="requiredField">Neumatico Repuesto</label> <select name="NRemplazo" class="form-control" id="NRemplazo" size="2"> <option >Si</option> <option >No</option> </select> <label for="AsientoSuple" class="requiredField">Asiento supletorio</label> <select name="AsientoSuple" class="form-control" id="AsientoSuple" size="2"> <option >Si</option> <option >No</option> </select> <label for="Antena" class="requiredField">Antena</label> <select name="Antena" class="form-control" id="Antena" size="2"> <option >Si</option> <option >No</option> </select> <label for="Tapacubos" class="requiredField">Tapacubos</label> <select name="Tapacubos" class="form-control" id="Tapacubos" size="2"> <option >Si</option> <option >No</option> </select> <label for="JLuces" class="requiredField">Juego de Luces</label> <select name="JLuces" class="form-control" id="JLuces" size="2"> <option >Si</option> <option >No</option> </select> <label for="OtroEquip" class="requiredField">Otros equipamientos</label><input type="text" class="form-control" id="OtroEquip" placeholder="..."><br> </details> <details> <summary>Documentos/Accesorios</summary> <legend>Daños Internos</legend> <label for="DAsientos" class="requiredField">Asientos</label> <select name="DAsientos" class="form-control" id="DAsientos" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="DGuantera" class="requiredField">Guantera</label> <select name="DGuantera" class="form-control" id="DGuantera" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="DVolante" class="requiredField">Volante</label> <select name="DVolante" class="form-control" id="DVolante" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="DRevestimientoTecho" class="requiredField">Revestimiento Techo</label> <select name="DRevestimientoTecho" class="form-control" id="DRevestimientoTecho" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="DMaletero" class="requiredField">Maletero</label> <select name="DMaletero" class="form-control" id="DMaletero" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="DABrazos" class="requiredField">Apoya Brazos</label> <select name="DABrazos" class="form-control" id="DABrazos" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="DGPuertas" class="requiredField">Guarnición de Puertas</label> <select name="DGPuertas" class="form-control" id="DGPuertas" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="CCentral" class="requiredField">Consola Central</label> <select name="CCentral" class="form-control" id="CCentral" size="2"> <option >Bien</option> <option >Mal</option> </select> <label for="obsDInt" class="requiredField">Observaciones Daños Interiores</label><input type="text" class="form-control" id="obsDInt" placeholder="...."><br> </details> <details> <summary>Daños Externos</summary> <label for="ObsDExt" class="requiredField">Observación Daños Exteriores</label><input type="text" class="form-control" id="ObsDExt" placeholder="ALD"><br> </details> <label for="CRenting" class="requiredField">Compañia renting</label><input type="text" class="form-control" id="CRenting" placeholder="Corsa"><br> <label for="EmpresaEntrega" class="requiredField">Empresa Entrega</label><input type="text" class="form-control" id="EmpresaEntrega" placeholder="Concesionario..."><br> <label for="Conductor" class="requiredField">Conductor</label><input type="text" class="form-control" id="Conductor" placeholder="Hipatia"><br> <label for="IdEmpleado" class="requiredField">Código Empleado</label><input type="text" class="form-control" id="IdEmpleado" placeholder="11223344"><br></div><em class="text-muted">Click para añadir punto de localizacion</em><div id="formHelp"></div><hr /><button type="submit" id="submit" class="btn btn-default btn-sm">Enviar</button></form></div>';
       if (e.accuracy) {
         var radius = (e.accuracy / 2) * 3.28084;
         circle = L.circle(e.latlng, radius).addTo(map);
@@ -127,7 +152,19 @@
       }, 100);
 
       marker.on('popupopen', function() {
-        $('#projectform').submit(function(event) {
+        
+
+// Install input filters.
+$("#KM").inputFilter(function(value) { return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 1000000); });
+$("#Matricula").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(isNaN(value[0]) &&isNaN(value[1]) &&isNaN(value[2])) &&(value === "" ||value.length <= 7); });
+$("#Marca").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(value === "" ||value.length <= 25); });
+$("#Modelo").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(value === "" ||value.length <= 25); });
+
+$("#ObsDExt").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(value === "" ||value.length <= 100); });
+$("#CRenting").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(value === "" ||value.length <= 25); });
+$("#Conductor").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(value === "" ||value.length <= 25); });
+$("#IdEmpleado").inputFilter(function(value) { return /^[A-Za-z0-9]*$/.test(value)&&(isNaN(value[0]) && isNaN(value[1])) &&(value === "" ||value.length <= 10); });
+$('#projectform').submit(function(event) {
             event.preventDefault();
             var 	KM	 = $('#KM').val();
             var 	IN_OUT	 = $('#IN_OUT').val();
@@ -156,15 +193,31 @@
             var 	obsDInt	 = $('#obsDInt').val();
             var 	ObsDExt	 = $('#ObsDExt').val();
             var 	CRenting	 = $('#CRenting').val();
-            var 	EmpresaEntrega	 = $('#EmpresaEntrega').val();
-            //console.log(descrip);
-            if (KM) {
-              //console.log(descrip);
+            var 	Conductor	 = $('#Conductor').val();            
+            var 	IdEmpleado	 = $('#IdEmpleado').val();
+            console.log(lat.toLocaleString("es-ES"));
+            console.log(lng.toLocaleString("es-ES"));
+            
+            if (KM&&IN_OUT
+            && Matricula
+            && Marca && Modelo && PCircualcion
+            && FTecnica && LMantenimiento
+            && ITV && segundaLlave
+            && NRemplazo && AsientoSuple
+            && Antena && Tapacubos
+            && JLuces && DAsientos
+            && DGuantera &&DVolante && DRevestimientoTecho
+            && DMaletero && DABrazos
+            && DGPuertas && CCentral
+            && obsDInt && ObsDExt
+            && Conductor && CRenting && EmpresaEntrega && IdEmpleado
+            ) {
+              
               $('#formdiv').html('<iframe src="https://docs.google.com/forms/d/' 
               + formId 
               + '/formResponse?entry.' 
-              + formLat + '=' + lat + '&entry.' 
-              + formLng + '=' + lng + '&entry.'
+              + formLat + '=' + lat.toLocaleString("es-ES") + '&entry.' 
+              + formLng + '=' + lng.toLocaleString("es-ES") + '&entry.'
               + formKM	+ '=' + 	KM	 + '&entry.'
               + formIN_OUT	+ '=' + 	IN_OUT	 + '&entry.'
               + formMatricula	+ '=' + 	Matricula	 + '&entry.'
@@ -193,7 +246,8 @@
               + formObsDExt	+ '=' + 	ObsDExt	 + '&entry.'
               + formCRenting	+ '=' + 	CRenting	 + '&entry.'
               + formEmpresaEntrega	+ '=' + 	EmpresaEntrega	 + '&entry.'
-              + '&submit=Submit" seamless scrolling="no" style="overflow:hidden;height:375px;border:lightgray solid thin;"></iframe>');
+              + formConductor	+ '=' + 	Conductor	 + '&entry.'
+              + formIdEmpleado	+ '=' + 	IdEmpleado + '&submit=Submit" seamless scrolling="no" style="overflow:hidden;height:375px;border:lightgray solid thin;"></iframe>');
             } else {
               $('#formHelp').html('<span style="color:red;">Por favor rellena los campos.</span>')
             }
