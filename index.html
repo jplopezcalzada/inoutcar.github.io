@@ -165,8 +165,6 @@
               + '/formResponse?entry.' 
               + formLat + '=' + lat + '&entry.' 
               + formLng + '=' + lng + '&entry.'
-              + formText + '=' + descrip 
-              //////
               + formKM	+ '=' + 	KM	 + '&entry.'
               + formIN_OUT	+ '=' + 	IN_OUT	 + '&entry.'
               + formMatricula	+ '=' + 	Matricula	 + '&entry.'
@@ -197,7 +195,7 @@
               + formEmpresaEntrega	+ '=' + 	EmpresaEntrega	 + '&entry.'
               + '&submit=Submit" seamless scrolling="no" style="overflow:hidden;height:375px;border:lightgray solid thin;"></iframe>');
             } else {
-              $('#formHelp').html('<span style="color:red;">Please enter a description of your point.</span>')
+              $('#formHelp').html('<span style="color:red;">Por favor rellena los campos.</span>')
             }
           });
       });
